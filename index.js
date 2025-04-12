@@ -51,7 +51,7 @@ app.post("/auth/login", async (req, res) => {
         return res.status(401).json({message:"Wrong login credentials."})
     }
 
-    const theyMatch = bcrypt.compare(password, user.password);
+    let theyMatch = await bcrypt.compare(password, user.password);
 
     if(!theyMatch) {
         return res.status(401).json({message: "Wrong login credentials."})
