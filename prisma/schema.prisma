@@ -23,6 +23,21 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
   isDeleted Boolean @default(false) @map("is_deleted")
   isDeactivated Boolean @default(false) @map("is_deactivated")
+  blogs Blog[]
 
   @@map("users")
+}
+
+model Blog {
+  id String @id @default(uuid())
+  title String @map("blog_title")
+  excerpt String @map("blog_excerpt")
+  content String? @map("blog_content")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  authorId String @map("author_id")
+  isDeleted Boolean @default(false) @map("is_deleted")
+  author User @relation(fields: [authorId], references: [id])
+
+  @@map("blogs")
 }
