@@ -80,3 +80,24 @@ export const updateBlog = async (req, res) => {
         res.status(500).json({message: "Something went wrong."})
     }
 }
+
+export const deleteBlog = async(req, res) => {
+    try{
+        const authorId = req.user.userId;
+        const {blogId} = req.params;
+
+        await client.blog.update({
+            where: {
+                authorId,
+                id: blogId
+            },
+            data: {
+                isDeleted: true
+            }
+        })
+
+        res.status(200).json({message:"Blog deleted successfully."})
+    }catch(e) {
+        res.status(500).json({message:"Something went wrong."})
+    }
+}
