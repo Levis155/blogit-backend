@@ -9,7 +9,7 @@ const app = express();
 
 app.use(express.json())
 app.use(cors({
-    origin: "*",
+    origin: "https://blogit-frontend-beta.vercel.app",
     methods: ["POST", "GET", "PUT", "PATCH", "DELETE"],
     credentials: true
 }))
