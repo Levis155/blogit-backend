@@ -28,9 +28,14 @@ export const getBlog = async (req, res) => {
 
         const blog = await client.blog.findFirst({
             where:{
-                authorId,
                 id: blogId,
                 isDeleted: false
+            },
+            select:{
+                title:true,
+                excerpt:true,
+                updatedAt:true,
+                author:true
             }
         })
         
@@ -55,6 +60,7 @@ export const getallBlogsByUser = async(req, res) => {
         console.log(blogs)
         res.status(200).json(blogs);
     } catch(e) {
+        console.log(e)
         res.status(500).json({message: "Something went wrong."})
     }
 }

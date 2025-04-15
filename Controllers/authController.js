@@ -49,15 +49,22 @@ export const loginUser= async (req, res) => {
     const jwtPayLoad = {
         userId: user.id,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
     }
 
     const token = jwt.sign(jwtPayLoad, process.env.JWT_SECRET_KEY);
     res.status(200).cookie("blogitAuthToken", token).json({
+        id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
         emailAddress: user.emailAddress,
-        username: user.userName
+        username: user.userName,
+        profilePhotoUrl: user.profilePhotoUrl,
+        phoneNumber: user.phoneNumber,
+        occupation: user.occupation,
+        bio: user.bio,
+        secondaryEmail: user.secondaryEmail,
+        createdAt:user.createdAt,
     })
    } catch(e) {
     res.status(500).json({message: "Something went wrong."})
