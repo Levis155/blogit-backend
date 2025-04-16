@@ -1,59 +1,68 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
-const client = new PrismaClient()
+const client = new PrismaClient();
 
-export const registerUser = async(req, res) => {
-    const{firstName, lastName, emailAddress, userName, password} = req.body;
+export const registerUser = async (req, res) => {
+  const { firstName, lastName, emailAddress, userName, password } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 12)
+  const hashedPassword = await bcrypt.hash(password, 12);
 
-    try{
-        const newUser = await client.user.create({
-            data:{
-                firstName,
-                lastName,
-                emailAddress,
-                userName,
-                password: hashedPassword
-            }
-        })
+  try {
+    const newUser = await client.user.create({
+      data: {
+        firstName,
+        lastName,
+        emailAddress,
+        userName,
+        password: hashedPassword,
+      },
+    });
 
-        res.status(201).json({
-            message: "User registered successfully"
-        })
-    } catch(e) {
-        res.status(500).json({
-            message: "Something went wrong. Please try again."
-        })
-    }
-}
+    res.status(201).json({
+      message: "User registered successfully",
+    });
+  } catch (e) {
+    res.status(500).json({
+      message: "Something went wrong. Please try again.",
+    });
+  }
+};
 
-export const loginUser= async (req, res) => {
-    const { identifier, password } = req.body;
+export const loginUser = async (req, res) => {
+  const { identifier, password } = req.body;
 
-   try{
-    const user = await client.user.findFirst({where: {OR: [{emailAddress: identifier}, {userName: identifier}]}})
+  try {
+    const user = await client.user.findFirst({
+      where: { OR: [{ emailAddress: identifier }, { userName: identifier }] },
+    });
 
-    if(!user) {
-        return res.status(401).json({message:"Wrong login credentials."})
+    if (!user) {
+      return res.status(401).json({ message: "Wrong login credentials." });
     }
 
     let theyMatch = await bcrypt.compare(password, user.password);
 
-    if(!theyMatch) {
-        return res.status(401).json({message: "Wrong login credentials."})
+    if (!theyMatch) {
+      return res.status(401).json({ message: "Wrong login credentials." });
     }
 
     const jwtPayLoad = {
-        userId: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-    }
+      userId: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
 
     const token = jwt.sign(jwtPayLoad, process.env.JWT_SECRET_KEY);
-    res.status(200).cookie("blogitAuthToken", token).json({
+    res
+      .status(200)
+      .cookie("blogitAuthToken", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      })
+      .json({
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -64,9 +73,9 @@ export const loginUser= async (req, res) => {
         occupation: user.occupation,
         bio: user.bio,
         secondaryEmail: user.secondaryEmail,
-        createdAt:user.createdAt,
-    })
-   } catch(e) {
-    res.status(500).json({message: "Something went wrong."})
-   } 
-}
+        createdAt: user.createdAt,
+      });
+  } catch (e) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
+};

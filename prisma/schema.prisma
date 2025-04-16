@@ -12,38 +12,39 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  id String @id @default(uuid())
-  firstName String @map("first_name")
-  lastName String @map("last_name")
-  emailAddress String @unique @map("email_address")
-  userName String @unique @map("user_name")
-  password String @unique @map("password")
-  profilePhotoUrl String? @map("profile_photo_url")
-  phoneNumber String? @unique @map("phone_number")
-  occupation String? @map("occupation")
-  bio String? @map("bio")
-  secondaryEmail String? @unique @map("secondary_email")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  isDeleted Boolean @default(false) @map("is_deleted")
-  isDeactivated Boolean @default(false) @map("is_deactivated")
-  blogs Blog[]
+  id              String   @id @default(uuid())
+  firstName       String   @map("first_name")
+  lastName        String   @map("last_name")
+  emailAddress    String   @unique @map("email_address")
+  userName        String   @unique @map("user_name")
+  password        String   @unique @map("password")
+  profilePhotoUrl String?  @map("profile_photo_url")
+  phoneNumber     String?  @unique @map("phone_number")
+  occupation      String?  @map("occupation")
+  bio             String?  @map("bio")
+  secondaryEmail  String?  @unique @map("secondary_email")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  isDeleted       Boolean  @default(false) @map("is_deleted")
+  isDeactivated   Boolean  @default(false) @map("is_deactivated")
+  blogs           Blog[]
 
   @@map("users")
 }
 
 model Blog {
-  id String @id @default(uuid())
-  title String @map("blog_title")
-  excerpt String @map("blog_excerpt")
-  blogImageUrl String? @map("blog_image_url")
-  content String? @map("blog_content")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  authorId String @map("author_id")
-  isDeleted Boolean @default(false) @map("is_deleted")
-  author User @relation(fields: [authorId], references: [id])
+  id           String   @id @default(uuid())
+  title        String   @map("blog_title")
+  excerpt      String   @map("blog_excerpt")
+  blogImageUrl String?  @map("blog_image_url")
+  content      String?  @map("blog_content")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  authorId     String   @map("author_id")
+  isDeleted    Boolean  @default(false) @map("is_deleted")
+  author       User     @relation(fields: [authorId], references: [id])
 
   @@map("blogs")
 }

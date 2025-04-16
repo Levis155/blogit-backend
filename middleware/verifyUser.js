@@ -12,7 +12,6 @@ function verifyUser (req, res, next) {
             return res.status(401).json({message:"Unauthorized."})
         } else{
             req.user = data;
-            console.log(data)
             next();
         }
     })
