@@ -4,6 +4,33 @@ import bcrypt from "bcryptjs";
 
 const client = new PrismaClient()
 
+export const getUserInfo = async (req, res) => {
+    try{
+        const userId = req.user.userId;
+
+        const userInfo = await client.user.findFirst({
+            where:{
+                id:userId
+            },
+            select:{
+                firstName:true,
+                lastName:true,
+                createdAt:true,
+                emailAddress:true,
+                userName:true,
+                phoneNumber:true,
+                occupation:true,
+                secondaryEmail:true,
+                bio:true
+            }
+        })
+        res.status(200).json(userInfo)
+    } catch(e) {
+        res.status(500).json({message:"something went wrong."})
+        console.log(e);
+    }
+}
+
 export const updatePersonalInfo = async(req, res) => {
     try{
         const userId = req.user.userId;
